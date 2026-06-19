@@ -1,43 +1,76 @@
-# EcoTrack – Déploiement sécurisé d'une application web sur AWS
+# 🚀 EcoTrack - Déploiement d'une Architecture AWS Two-Tier
 
-## 1. Présentation du projet
+## 📖 Présentation du projet
 
 ### Contexte
 
-EcoTrack est une startup spécialisée dans la Green-Tech qui développe une application web permettant aux utilisateurs d'estimer leur empreinte carbone.
+EcoTrack est une startup Green-Tech développant une application web permettant aux utilisateurs d'estimer leur empreinte carbone.
 
-Dans le cadre de ce projet, l'objectif était de concevoir et déployer une infrastructure AWS sécurisée, évolutive et économique afin d'héberger le prototype de l'application.
+L'objectif de ce projet était de concevoir et déployer une infrastructure AWS sécurisée afin d'héberger cette application tout en respectant les bonnes pratiques Cloud :
 
-Ce projet a également permis de mettre en pratique les notions fondamentales du Cloud Computing, notamment la conception réseau, la sécurisation des ressources, l'hébergement d'applications web, la gestion de bases de données managées et l'utilisation de Git pour le versioning du code.
+* Isolation réseau
+* Principe du moindre privilège
+* Sécurisation des accès
+* Hébergement d'une base de données privée
+* Gestion du code avec Git
 
-### Objectifs
-
-* Héberger une application web Flask sur AWS.
-* Concevoir un réseau isolé et sécurisé.
-* Déployer une base de données dans un environnement privé.
-* Permettre la communication entre l'application et la base de données.
-* Automatiser le déploiement du code depuis un dépôt Git.
-* Respecter les bonnes pratiques AWS et les contraintes du Free Tier.
+Ce projet a été réalisé dans le cadre d'un apprentissage pratique des services fondamentaux AWS.
 
 ---
 
-## 2. Architecture
+## 🎯 Objectifs
 
-L'architecture mise en place repose sur un modèle Two-Tier Architecture (architecture à deux niveaux).
+* Déployer une application Flask sur AWS.
+* Héberger une base de données MySQL sur Amazon RDS.
+* Mettre en place une architecture réseau sécurisée.
+* Permettre la communication EC2 ↔ RDS.
+* Utiliser Git et GitHub pour le versioning du code.
+* Respecter les contraintes du Free Tier AWS.
 
-### Couche Web
+---
 
-Une instance Amazon EC2 héberge l'application Flask.
+# 🏗️ Architecture
 
-Cette instance est déployée dans un sous-réseau public afin d'être accessible depuis Internet.
+## Architecture logique
 
-### Couche Base de Données
+L'infrastructure repose sur une architecture Two-Tier composée :
 
-Une instance Amazon RDS MySQL est déployée dans des sous-réseaux privés afin de garantir l'isolation des données.
+### Couche Application
 
-La base de données n'est pas accessible directement depuis Internet.
+* Amazon EC2
+* Ubuntu Server
+* Application Flask
+* Déploiement depuis GitHub
 
-### Composants utilisés
+### Couche Données
+
+* Amazon RDS MySQL
+* Déployé dans des sous-réseaux privés
+* Accessible uniquement depuis l'instance EC2
+
+---
+
+## 🖼️ Schéma d'architecture
+
+
+![Architecture AWS](architecture-ecotrack.png)
+
+---
+
+# 🌐 Architecture Réseau
+
+## Plan d'adressage
+
+| Ressource        | CIDR        |
+| ---------------- | ----------- |
+| VPC              | 10.0.0.0/16 |
+| Public Subnet    | 10.0.1.0/24 |
+| Private Subnet A | 10.0.2.0/24 |
+| Private Subnet B | 10.0.3.0/24 |
+
+---
+
+## Composants AWS utilisés
 
 * Amazon VPC
 * Internet Gateway
@@ -45,255 +78,219 @@ La base de données n'est pas accessible directement depuis Internet.
 * Security Groups
 * Amazon EC2
 * Amazon RDS MySQL
-* GitHub
-* Flask
-* Linux Ubuntu
-
-### Schéma logique
-
-Internet
-
-↓
-
-Internet Gateway
-
-↓
-
-VPC (10.0.0.0/16)
-
-├── Public Subnet (10.0.1.0/24)
-
-│ └── EC2 Ubuntu + Application Flask
-
-│
-
-├── Private Subnet A (10.0.2.0/24)
-
-└── Private Subnet B (10.0.3.0/24)
-
-└── Amazon RDS MySQL
 
 ---
 
-## 3. Choix techniques
+## 🔒 Sécurité
 
-### Pourquoi Amazon EC2 ?
+### Security Group EC2
 
-Amazon EC2 permet d'obtenir un contrôle complet sur le système d'exploitation, l'installation des dépendances et le déploiement de l'application.
+| Port | Description | Source         |
+| ---- | ----------- | -------------- |
+| 22   | SSH         | Mon adresse IP |
+| 80   | HTTP        | 0.0.0.0/0      |
 
-Cette approche est idéale pour comprendre les fondamentaux du Cloud.
+### Security Group RDS
 
-### Pourquoi Amazon RDS ?
-
-RDS simplifie considérablement l'administration de la base de données :
-
-* sauvegardes automatisées ;
-* maintenance simplifiée ;
-* haute disponibilité possible ;
-* gestion simplifiée des correctifs.
-
-### Pourquoi GitHub ?
-
-GitHub a été utilisé afin de :
-
-* versionner le code ;
-* conserver un historique des modifications ;
-* permettre à l'instance EC2 de récupérer automatiquement l'application.
-
-### Pourquoi Flask ?
-
-Flask est un framework léger particulièrement adapté aux démonstrations et aux prototypes.
-
-Il permet de se concentrer sur l'infrastructure plutôt que sur la complexité applicative.
-
-### Choix de sécurité
-
-Principe du moindre privilège :
-
-* SSH limité à mon adresse IP.
-* HTTP ouvert au public.
-* RDS accessible uniquement depuis le Security Group de l'EC2.
-* Base de données non exposée sur Internet.
+| Port | Description | Source             |
+| ---- | ----------- | ------------------ |
+| 3306 | MySQL       | Security Group EC2 |
 
 ---
 
-## 4. Déploiement
+# ⚙️ Déploiement
 
-### Étape 1 : Préparation du dépôt Git
+## Étape 1 - Dépôt Git
 
-Création du dépôt Git local :
+Initialisation du dépôt :
 
-* README.md
-* .gitignore
-* app.py
-
-Initialisation :
-
+```bash
 git init
-
-Premier commit :
-
+git add .
 git commit -m "Initial commit"
-
-Publication sur GitHub :
-
 git push origin main
+```
 
-### Étape 2 : Création du réseau
+### Capture
 
-Création du VPC :
+![Git Repository](images/github-repository.png)
 
-10.0.0.0/16
+---
 
-Création des sous-réseaux :
-
-* Public : 10.0.1.0/24
-* Privé A : 10.0.2.0/24
-* Privé B : 10.0.3.0/24
+## Étape 2 - Création du VPC
 
 Création :
 
+* VPC
 * Internet Gateway
-* Route Table publique
-* Association au subnet public
+* Route Table
+* Subnets publics et privés
 
-### Étape 3 : Déploiement RDS
+### Capture
 
-Création d'un DB Subnet Group.
+![VPC](images/vpc.png)
 
-Déploiement d'une instance MySQL RDS :
+---
 
+## Étape 3 - Déploiement Amazon RDS
+
+Création :
+
+* MySQL
 * Free Tier
 * Public Access : Disabled
-* Single-AZ
 
-### Étape 4 : Déploiement EC2
+### Capture
 
-Création d'une instance :
+![RDS](images/rds-database.png)
+
+---
+
+## Étape 4 - Déploiement Amazon EC2
+
+Création :
 
 * Ubuntu Server
-* Type t2.micro
+* t2.micro
 * Adresse IP publique
 
 Installation :
 
+* Git
 * Python
 * Flask
-* Git
 
-Clonage du dépôt GitHub.
+Déploiement de l'application.
 
-Lancement de l'application Flask.
+### Capture
+
+![EC2](images/serveur-web.png)
 
 ---
 
-## 5. Tests réalisés
+# 🧪 Tests et Validation
 
-### Test n°1 : Accessibilité de l'application
+## Test 1 - Accessibilité Web
 
-Objectif :
+### Objectif
 
 Vérifier que l'application est accessible depuis Internet.
 
-Résultat :
+### Résultat
 
-Accès réussi via l'adresse IP publique de l'instance EC2.
+Succès.
 
-Statut : Validé
+### Capture
 
-### Test n°2 : Connexion EC2 → RDS
-
-Objectif :
-
-Vérifier que l'application peut communiquer avec la base de données.
-
-Résultat :
-
-Connexion MySQL réussie depuis l'instance EC2.
-
-Statut : Validé
-
-### Test n°3 : Isolation réseau
-
-Objectif :
-
-Vérifier qu'aucune connexion directe à la base n'est possible depuis Internet.
-
-Résultat :
-
-Tentative de connexion depuis le poste local impossible.
-
-Statut : Validé
-
-### Test n°4 : Validation des Security Groups
-
-Objectif :
-
-Vérifier les règles réseau.
-
-Résultat :
-
-* HTTP accessible.
-* SSH limité.
-* MySQL limité à l'EC2.
-
-Statut : Validé
+![Application Web](images/test1.png)
 
 ---
 
-## 6. Résultats
+## Test 2 - Connexion EC2 → RDS
 
-Le projet a permis de mettre en œuvre avec succès une architecture AWS sécurisée composée d'une couche web et d'une couche base de données.
+### Objectif
 
-L'application est accessible depuis Internet et communique correctement avec la base de données RDS tout en respectant les bonnes pratiques de sécurité.
+Valider la communication entre l'application et la base de données.
 
-Les objectifs initiaux ont été atteints :
+### Résultat
 
-* Hébergement de l'application.
-* Isolation de la base de données.
-* Mise en œuvre des Security Groups.
-* Utilisation de Git.
-* Respect du Free Tier AWS.
+Connexion réussie.
 
----
+### Capture
 
-## 7. Améliorations futures
-
-Plusieurs évolutions pourraient être apportées à cette architecture.
-
-### Sécurité
-
-* Mise en place du HTTPS avec certificat SSL.
-* Utilisation d'AWS Secrets Manager pour stocker les mots de passe.
-* Mise en place d'un Bastion Host.
-
-### Haute disponibilité
-
-* Déploiement Multi-AZ.
-* Ajout d'un Load Balancer.
-* Mise en place d'un Auto Scaling Group.
-
-### DevOps
-
-* Déploiement automatisé via GitHub Actions.
-* Infrastructure as Code avec Terraform.
-* Déploiement continu (CI/CD).
-
-### Monitoring
-
-* Amazon CloudWatch.
-* Alertes automatiques.
-* Dashboard de supervision.
-
-### Architecture avancée
-
-* Migration vers ECS ou Kubernetes.
-* Utilisation de services serverless AWS.
-* Déploiement sur plusieurs environnements (Dev, Test, Production).
+![Connexion MySQL](images/test2.png)
 
 ---
 
-## Conclusion
+## Test 3 - Isolation Réseau
 
-Ce projet a permis d'acquérir une expérience pratique dans la conception et le déploiement d'une infrastructure AWS sécurisée. Il constitue une excellente introduction aux métiers de Cloud Engineer, DevOps Engineer et Architecte Cloud en mettant en œuvre les principaux services AWS utilisés en entreprise.
+### Objectif
 
+Vérifier que la base n'est pas accessible depuis Internet.
+
+### Résultat
+
+Connexion refusée depuis le poste client.
+
+### Capture
+
+![Connexion Refusée](images/test3.png)
+
+---
+
+# 📊 Résultats
+
+Les objectifs du projet ont été atteints :
+
+✅ Déploiement d'une application web sur AWS
+
+✅ Création d'un VPC personnalisé
+
+✅ Mise en place de sous-réseaux publics et privés
+
+✅ Déploiement d'une base MySQL privée
+
+✅ Sécurisation des flux réseau via Security Groups
+
+✅ Utilisation de Git et GitHub
+
+✅ Validation des communications EC2 ↔ RDS
+
+---
+
+# 📚 Compétences acquises
+
+Au travers de ce projet, j'ai renforcé mes compétences sur :
+
+* Amazon VPC
+* Amazon EC2
+* Amazon RDS
+* Security Groups
+* Route Tables
+* Git / GitHub
+* Déploiement d'applications Flask
+* Sécurisation d'infrastructures AWS
+* Architecture Two-Tier
+
+---
+
+# 🚀 Améliorations futures
+
+## Sécurité
+
+* HTTPS avec certificat SSL
+* AWS Secrets Manager
+* Bastion Host
+
+## Haute disponibilité
+
+* Multi-AZ
+* Load Balancer
+* Auto Scaling Group
+
+## DevOps
+
+* GitHub Actions
+* Terraform
+* Infrastructure as Code
+
+## Monitoring
+
+* Amazon CloudWatch
+* Alertes automatiques
+* Dashboard de supervision
+
+---
+
+# 👨‍💻 Auteur
+
+Projet réalisé dans le cadre d'un apprentissage pratique des services AWS fondamentaux.
+
+Technologies utilisées :
+
+* AWS
+* Ubuntu
+* Python Flask
+* MySQL
+* Git
+* GitHub
