@@ -111,9 +111,6 @@ git push origin main
 ```
 
 ### Capture
-
-![Git Repository](images/github-repository.png)
-
 ---
 
 ## Étape 2 - Création du VPC
@@ -127,7 +124,7 @@ Création :
 
 ### Capture
 
-![VPC](images/vpc.png)
+![VPC](https://github.com/abitoremma/ecotrack-app/blob/main/images/vpc.png?raw=true)
 
 ---
 
@@ -141,7 +138,8 @@ Création :
 
 ### Capture
 
-![RDS](images/rds-database.png)
+![RDS](https://github.com/abitoremma/ecotrack-app/blob/main/images/rds-database.png?raw=true)
+![GRS](https://github.com/abitoremma/ecotrack-app/blob/main/images/groupe-reseau-rds.png?raw=true)
 
 ---
 
@@ -163,7 +161,7 @@ Déploiement de l'application.
 
 ### Capture
 
-![EC2](images/serveur-web.png)
+![EC2](https://github.com/abitoremma/ecotrack-app/blob/main/images/serveur-web.png?raw=true)
 
 ---
 
@@ -181,7 +179,7 @@ Succès.
 
 ### Capture
 
-![Application Web](images/test1.png)
+![Application Web](https://github.com/abitoremma/ecotrack-app/blob/main/images/test1.png?raw=true)
 
 ---
 
@@ -197,7 +195,7 @@ Connexion réussie.
 
 ### Capture
 
-![Connexion MySQL](images/test2.png)
+![Connexion MySQL](https://github.com/abitoremma/ecotrack-app/blob/main/images/test2.png?raw=true)
 
 ---
 
@@ -213,7 +211,7 @@ Connexion refusée depuis le poste client.
 
 ### Capture
 
-![Connexion Refusée](images/test3.png)
+![Connexion Refusée](https://github.com/abitoremma/ecotrack-app/blob/main/images/test3.png?raw=true)
 
 ---
 
