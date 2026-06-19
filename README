@@ -53,7 +53,7 @@ L'infrastructure repose sur une architecture Two-Tier composée :
 ## 🖼️ Schéma d'architecture
 
 
-![Architecture AWS](images/architecture-ecotrack.png)
+![image alt](https://github.com/abitoremma/ecotrack-app/blob/main/images/architecture-ecotrack.png)
 ---
 
 # 🌐 Architecture Réseau
