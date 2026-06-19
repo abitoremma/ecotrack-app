@@ -53,8 +53,7 @@ L'infrastructure repose sur une architecture Two-Tier composée :
 ## 🖼️ Schéma d'architecture
 
 
-![Architecture AWS](architecture-ecotrack.png)
-
+![Architecture AWS](images/architecture-ecotrack.png)
 ---
 
 # 🌐 Architecture Réseau
